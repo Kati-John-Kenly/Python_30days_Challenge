@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Master: 30-Day Challenge & Roadmap</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Configure Tailwind Settings -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'ui-monospace', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        python: {
+                            blue: '#3776AB',
+                            yellow: '#FFD43B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .tab-view { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-view.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Code Editor Specifics */
+        .code-input { tab-size: 4; }
+        
+        /* Roadmap node connector line */
+        .roadmap-line::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            right: -50%;
+            width: 100%;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+        .dark .roadmap-line::after { background: #334155; }
+        .roadmap-node:last-child .roadmap-line::after { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen antialiased flex flex-col">
+
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-python-blue to-blue-800 flex items-center justify-center text-python-yellow font-bold shadow-md">
+                    <i class="fa-brands fa-python text-2xl"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-python-blue to-blue-600 dark:from-blue-400 dark:to-python-yellow hidden sm:block">PyMaster</span>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden lg:flex items-center space-x-1 overflow-x-auto">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-lg text-sm font-semibold transition-colors nav-btn active-nav">
+                    <i class="fa-solid fa-chart-pie mr-1.5 opacity-70"></i>Dashboard
+                </button>
+                <button onclick="switchTab('roadmap')" id="nav-roadmap" class="px-3 py-2 rounded-lg text-sm font-semibold transition-colors nav-btn text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-map-location-dot mr-1.5 opacity-70"></i>Roadmap
+                </button>
+                <button onclick="switchTab('curriculum')" id="nav-curriculum" class="px-3 py-2 rounded-lg text-sm font-semibold transition-colors nav-btn text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-calendar-day mr-1.5 opacity-70"></i>30 Days
+                </button>
+                <button onclick="switchTab('challenges')" id="nav-challenges" class="px-3 py-2 rounded-lg text-sm font-semibold transition-colors nav-btn text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-dumbbell mr-1.5 opacity-70"></i>Challenges
+                </button>
+                <button onclick="switchTab('projects')" id="nav-projects" class="px-3 py-2 rounded-lg text-sm font-semibold transition-colors nav-btn text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-code mr-1.5 opacity-70"></i>Projects
+                </button>
+                <button onclick="switchTab('compiler')" id="nav-compiler" class="px-3 py-2 rounded-lg text-sm font-semibold transition-colors nav-btn text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-terminal mr-1.5 opacity-70 text-amber-500"></i>IDE & AI
+                </button>
+            </nav>
+
+            <!-- User Auth & Mobile Menu Toggle -->
+            <div class="flex items-center space-x-3">
+                <!-- User Profile / Login -->
+                <div id="auth-container">
+                    <button onclick="openAuthModal()" class="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-lg shadow hover:opacity-90 transition">
+                        Sign In
+                    </button>
+                </div>
+
+                <!-- Mobile Hamburger -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition focus:outline-none p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl z-50 lg:hidden">
+            <div class="px-4 py-4 flex flex-col space-y-1">
+                <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="text-left px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</button>
+                <button onclick="switchTab('roadmap'); toggleMobileMenu()" class="text-left px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"><i class="fa-solid fa-map-location-dot w-6"></i> Roadmap</button>
+                <button onclick="switchTab('curriculum'); toggleMobileMenu()" class="text-left px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"><i class="fa-solid fa-calendar-day w-6"></i> 30-Day Curriculum</button>
+                <button onclick="switchTab('challenges'); toggleMobileMenu()" class="text-left px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"><i class="fa-solid fa-dumbbell w-6"></i> Challenges</button>
+                <button onclick="switchTab('projects'); toggleMobileMenu()" class="text-left px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"><i class="fa-solid fa-code w-6"></i> Mini Projects</button>
+                <button onclick="switchTab('compiler'); toggleMobileMenu()" class="text-left px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"><i class="fa-solid fa-terminal w-6 text-amber-500"></i> IDE & AI Tutor</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full relative">
+        
+        <!-- ================= VIEW: DASHBOARD ================= -->
+        <div id="view-dashboard" class="tab-view active max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 rounded-3xl p-8 border border-slate-700 shadow-xl relative overflow-hidden text-white">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-python-blue rounded-full opacity-20 blur-3xl"></div>
+                <div class="absolute -bottom-24 -right-12 w-64 h-64 bg-python-yellow rounded-full opacity-10 blur-3xl"></div>
+                
+                <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">Welcome back, <span id="dash-username" class="text-python-yellow">Developer</span>!</h1>
+                <p class="text-slate-300 text-lg max-w-2xl mb-8">Ready to continue your journey from Zero to Hero? Pick up where you left off or challenge yourself with a new project.</p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="switchTab('curriculum')" class="px-6 py-3 bg-python-blue hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg flex items-center">
+                        Resume 30-Day Challenge <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                    <button onclick="switchTab('roadmap')" class="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 font-semibold rounded-xl transition flex items-center">
+                        View Full Roadmap
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-fire"></i></div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Day Streak</p>
+                        <p class="text-2xl font-bold" id="stat-streak">0</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Days Completed</p>
+                        <p class="text-2xl font-bold"><span id="stat-days">0</span>/30</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-code"></i></div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Challenges Won</p>
+                        <p class="text-2xl font-bold" id="stat-challenges">0</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-star"></i></div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total XP</p>
+                        <p class="text-2xl font-bold" id="stat-xp">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Resources & Next Steps -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- AI Quick Action -->
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 p-8 rounded-3xl border border-emerald-100 dark:border-emerald-800/50 flex flex-col justify-center">
+                    <div class="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center text-xl mb-4 shadow-lg shadow-emerald-500/30"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3 class="text-2xl font-bold mb-2 text-emerald-900 dark:text-emerald-400">Stuck on a concept?</h3>
+                    <p class="text-emerald-700 dark:text-emerald-300/80 mb-6">Talk to your Gemini-powered AI Tutor to get personalized explanations, code debugging, and tailored practice problems.</p>
+                    <button onclick="switchTab('compiler'); setTimeout(()=>document.getElementById('tutor-chat-input').focus(), 100); toggleIdeMode('tutor')" class="self-start px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-md">
+                        Ask AI Tutor Now
+                    </button>
+                </div>
+
+                <!-- Best Resources -->
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fa-solid fa-bookmark text-python-blue mr-2"></i> Top Recommended Channels</h3>
+                    <div class="space-y-4">
+                        <a href="https://www.youtube.com/c/Coreyms" target="_blank" class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-100 text-red-500 rounded-full flex items-center justify-center"><i class="fa-brands fa-youtube"></i></div>
+                                <div><p class="font-bold text-sm">Corey Schafer</p><p class="text-xs text-slate-500">In-depth Python Tutorials</p></div>
+                            </div>
+                            <i class="fa-solid fa-external-link-alt text-slate-400 text-xs"></i>
+                        </a>
+                        <a href="https://www.youtube.com/c/programmingwithmosh" target="_blank" class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-100 text-red-500 rounded-full flex items-center justify-center"><i class="fa-brands fa-youtube"></i></div>
+                                <div><p class="font-bold text-sm">Programming with Mosh</p><p class="text-xs text-slate-500">Great for absolute beginners</p></div>
+                            </div>
+                            <i class="fa-solid fa-external-link-alt text-slate-400 text-xs"></i>
+                        </a>
+                        <a href="https://www.youtube.com/c/TechWithTim" target="_blank" class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-100 text-red-500 rounded-full flex items-center justify-center"><i class="fa-brands fa-youtube"></i></div>
+                                <div><p class="font-bold text-sm">Tech With Tim</p><p class="text-xs text-slate-500">Projects & Advanced Topics</p></div>
+                            </div>
+                            <i class="fa-solid fa-external-link-alt text-slate-400 text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: ROADMAP ================= -->
+        <div id="view-roadmap" class="tab-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-4xl font-extrabold tracking-tight mb-4">Python Learning Roadmap</h2>
+                <p class="text-lg text-slate-500 dark:text-slate-400">Your journey from absolute beginner to specialized master. Build a strong foundation, level up, go deeper, and choose your path.</p>
+            </div>
+
+            <!-- Horizontal / Stacked Stages -->
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-4 justify-between relative z-10" id="roadmap-container">
+                <!-- Javascript will populate the 5 pillars -->
+            </div>
+        </div>
+
+        <!-- ================= VIEW: CURRICULUM ================= -->
+        <div id="view-curriculum" class="tab-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold tracking-tight flex items-center">
+                        <i class="fa-solid fa-calendar-day text-python-blue mr-3"></i>30-Day Challenge
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1">Consistency is key. Tackle one topic per day.</p>
+                </div>
+                <div class="bg-slate-200 dark:bg-slate-700 h-3 w-full md:w-64 rounded-full overflow-hidden">
+                    <div id="curriculum-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-1000"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="curriculum-grid">
+                <!-- Javascript will populate this grid -->
+            </div>
+        </div>
+
+        <!-- ================= VIEW: CHALLENGES ================= -->
+        <div id="view-challenges" class="tab-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold tracking-tight flex items-center">
+                        <i class="fa-solid fa-dumbbell text-purple-500 mr-3"></i>Mastery Challenges
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2 max-w-3xl">Finished the 30 days? Put your skills to the test across 5 specialized disciplines. Each category features progressive difficulty levels.</p>
+                </div>
+                <button onclick="generateCustomAIChallenge()" id="btn-custom-challenge" class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold rounded-xl shadow-lg transition flex items-center whitespace-nowrap">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generate AI Challenge
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 overflow-x-auto" id="challenge-tabs">
+                <!-- Tabs generated by JS -->
+            </div>
+
+            <div id="challenge-content-area" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm min-h-[400px]">
+                <!-- Content populated by JS based on selected tab -->
+            </div>
+        </div>
+
+        <!-- ================= VIEW: PROJECTS ================= -->
+        <div id="view-projects" class="tab-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+            <h2 class="text-3xl font-extrabold tracking-tight flex items-center">
+                <i class="fa-solid fa-laptop-code text-indigo-500 mr-3"></i>Capstone Mini Projects
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400">Apply what you've learned by building these real-world applications (Days 27-29).</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
+                <!-- Proj 1 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm flex flex-col">
+                    <div class="h-32 bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-5xl text-indigo-500">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-500 mb-1">Day 27</span>
+                        <h3 class="text-xl font-bold mb-2">To-Do List App</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 flex-1">Build a CLI application to add, view, delete, and mark tasks as complete. Tests list management and loops.</p>
+                        <button onclick="startProject('todo')" class="w-full py-2.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition">Start Project</button>
+                    </div>
+                </div>
+                <!-- Proj 2 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm flex flex-col">
+                    <div class="h-32 bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-5xl text-rose-500">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <span class="text-xs font-bold uppercase tracking-wider text-rose-500 mb-1">Day 28</span>
+                        <h3 class="text-xl font-bold mb-2">Password Generator</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 flex-1">Use the <code>random</code> module and conditionals to generate strong passwords based on user preferences.</p>
+                        <button onclick="startProject('password')" class="w-full py-2.5 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 font-bold rounded-xl hover:bg-rose-100 dark:hover:bg-rose-900/50 transition">Start Project</button>
+                    </div>
+                </div>
+                <!-- Proj 3 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm flex flex-col">
+                    <div class="h-32 bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-5xl text-amber-500">
+                        <i class="fa-regular fa-hand-scissors"></i>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-1">Day 29</span>
+                        <h3 class="text-xl font-bold mb-2">Rock Paper Scissors</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 flex-1">Create a classic game against the computer. Excellent practice for while loops and if/elif/else logic.</p>
+                        <button onclick="startProject('rps')" class="w-full py-2.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-bold rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/50 transition">Start Project</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: PLAYGROUND & AI ================= -->
+        <div id="view-compiler" class="tab-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-64px)] overflow-hidden flex flex-col">
+            
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-extrabold tracking-tight flex items-center">
+                    <i class="fa-solid fa-terminal text-amber-500 mr-3"></i>Interactive IDE & Tutor
+                </h2>
+                <div class="flex bg-slate-200 dark:bg-slate-800 p-1 rounded-lg">
+                    <button onclick="toggleIdeMode('code')" id="btn-mode-code" class="px-4 py-1.5 rounded-md text-sm font-bold bg-white dark:bg-slate-600 shadow-sm transition">Editor</button>
+                    <button onclick="toggleIdeMode('tutor')" id="btn-mode-tutor" class="px-4 py-1.5 rounded-md text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-emerald-500"></i>AI Tutor</button>
+                </div>
+            </div>
+
+            <!-- Main IDE Layout (Editor + Output) -->
+            <div id="ide-workspace" class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                <!-- Editor -->
+                <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 flex flex-col shadow-xl">
+                    <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between border-b border-slate-700">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-brands fa-python text-python-yellow"></i>
+                            <span class="text-xs font-mono text-slate-300 font-bold tracking-wider">main.py</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="aiDebugCode()" id="btn-ai-review" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs transition flex items-center" title="Ask AI to review your code"><i class="fa-solid fa-wand-magic-sparkles text-emerald-400 mr-1.5"></i>Review</button>
+                            <button onclick="runCode()" class="px-4 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded text-xs transition flex items-center shadow-lg shadow-emerald-500/20"><i class="fa-solid fa-play mr-1.5"></i>Run</button>
+                        </div>
+                    </div>
+                    <textarea id="code-editor" class="code-input flex-1 bg-slate-900 text-slate-100 p-4 font-mono text-[14px] resize-none outline-none leading-relaxed" spellcheck="false"># Welcome to PyMaster IDE!
+# Write your Python code here.
+
+def greet_developer(name):
+    print(f"Hello, {name}! Let's write some Python.")
+
+if __name__ == "__main__":
+    greet_developer("Zero to Hero")
+    
+    # Try the challenge: Print numbers 1 to 5
+    for i in range(1, 6):
+        print(f"Number: {i}")</textarea>
+                </div>
+
+                <!-- Console Output -->
+                <div class="bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex flex-col shadow-xl">
+                    <div class="bg-slate-900 px-4 py-2.5 flex items-center justify-between border-b border-slate-800">
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-wider font-bold">Terminal Output</span>
+                        <button onclick="clearConsole()" class="text-xs text-slate-500 hover:text-slate-300 transition"><i class="fa-solid fa-trash-can mr-1"></i>Clear</button>
+                    </div>
+                    <div id="console-output" class="flex-1 p-4 font-mono text-sm text-slate-300 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                        <div class="text-slate-600">>>> Ready to execute code...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Tutor Chat Layout (Hidden by default) -->
+            <div id="tutor-workspace" class="hidden flex-1 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col shadow-lg">
+                <div class="bg-slate-50 dark:bg-slate-900 px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600">
+                            <i class="fa-solid fa-robot text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 dark:text-white">Gemini Python Tutor</h3>
+                            <p class="text-xs text-slate-500">Powered by Google AI</p>
+                        </div>
+                    </div>
+                    <button onclick="clearTutorChat()" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-white">Clear Chat</button>
+                </div>
+                
+                <div id="tutor-chat-messages" class="flex-1 p-6 overflow-y-auto space-y-6 bg-slate-50/50 dark:bg-slate-800/50">
+                    <!-- Initial Msg -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm flex-shrink-0 mt-1"><i class="fa-solid fa-robot"></i></div>
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-600 max-w-[80%]">
+                            Hello! I'm your AI programming tutor. Ask me to explain a concept from the 30-day curriculum, review your code, or generate a practice problem!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
+                    <div class="relative flex items-center">
+                        <input type="text" id="tutor-chat-input" onkeydown="if(event.key==='Enter') sendTutorMessage()" placeholder="e.g., 'Explain list comprehensions with an example...'" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-4 pr-12 py-3.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800 dark:text-white">
+                        <button onclick="sendTutorMessage()" class="absolute right-2 w-9 h-9 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center justify-center transition">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-python-blue mx-auto flex items-center justify-center text-python-yellow text-3xl mb-4 shadow-lg"><i class="fa-brands fa-python"></i></div>
+                <h2 class="text-2xl font-bold">Join PyMaster</h2>
+                <p class="text-sm text-slate-500 mt-1">Save your progress & track your journey</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Username</label>
+                    <input type="text" id="auth-username" placeholder="e.g. PythonCoder99" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-python-blue focus:ring-1 focus:ring-python-blue outline-none text-slate-800 dark:text-white">
+                </div>
+                <button onclick="loginUser()" class="w-full py-3 bg-python-blue hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg">Start Learning</button>
+                
+                <!-- Google Login Divider -->
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                    <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider">or</span>
+                    <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                </div>
+                
+                <!-- Google Login Button -->
+                <button onclick="loginWithGoogle()" class="w-full py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold rounded-xl transition shadow-sm flex items-center justify-center space-x-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span>Sign in with Google</span>
+                </button>
+            </div>
+            <p class="text-xs text-center text-slate-400 mt-6">This uses local storage. No real data is transmitted.</p>
+        </div>
+    </div>
+
+    <!-- Curriculum Day Modal -->
+    <div id="day-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="day-modal-content">
+            <!-- Header -->
+            <div class="px-6 py-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 rounded-t-3xl">
+                <div>
+                    <span class="text-sm font-bold text-python-blue" id="modal-day-num">Day X</span>
+                    <h2 class="text-2xl font-bold mt-1" id="modal-day-title">Topic Title</h2>
+                </div>
+                <button onclick="closeDayModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <!-- Scrollable Body -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+                <!-- Concept -->
+                <div>
+                    <h3 class="font-bold text-lg border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">Concept Breakdown</h3>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed" id="modal-concept">Concept description goes here.</p>
+                </div>
+                
+                <!-- Use Case -->
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
+                    <h4 class="font-bold text-blue-800 dark:text-blue-400 text-sm mb-1"><i class="fa-solid fa-lightbulb mr-2"></i>Real World Application</h4>
+                    <p class="text-sm text-blue-700 dark:text-blue-300" id="modal-usecase">Use case details.</p>
+                </div>
+
+                <!-- Recommended Video -->
+                <div>
+                    <h3 class="font-bold text-lg mb-3">Top Tutorial Reference</h3>
+                    <a href="#" target="_blank" id="modal-video-link" class="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 transition inline-flex">
+                        <i class="fa-brands fa-youtube text-red-500 text-2xl"></i>
+                        <span class="text-sm font-semibold text-slate-700 dark:text-slate-200" id="modal-video-text">Watch on YouTube</span>
+                    </a>
+                </div>
+                
+                <!-- AI Quiz Container -->
+                <div id="quiz-container" class="hidden flex-col space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                </div>
+            </div>
+
+            <!-- Footer Action -->
+            <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-b-3xl flex justify-between items-center flex-wrap gap-3">
+                <button onclick="markDayComplete()" id="btn-mark-complete" class="px-4 py-2 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 font-bold rounded-lg hover:bg-emerald-200 transition text-sm flex items-center">
+                    <i class="fa-solid fa-check mr-2"></i> Mark as Done
+                </button>
+                <div class="flex space-x-2">
+                    <button onclick="generateAIQuiz()" id="btn-generate-quiz" class="px-4 py-2 bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 hover:bg-purple-200 font-bold rounded-xl shadow-sm transition text-sm flex items-center">
+                        <i class="fa-solid fa-brain mr-2"></i> AI Quiz
+                    </button>
+                    <button onclick="practiceDayCode()" class="px-5 py-2.5 bg-python-blue hover:bg-blue-600 text-white font-bold rounded-xl shadow-md transition text-sm flex items-center">
+                        Practice in IDE <i class="fa-solid fa-code ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA DEFINITIONS ---
+        
+        // 1. Roadmap Data
+        const roadmapData = [
+            { id: 'stage1', title: 'BEGINNER', subtitle: 'Build Strong Foundations', color: 'from-green-500 to-emerald-500', icon: 'fa-seedling', items: ['Intro to Python', 'Setup (IDLE/VS Code)', 'Variables & Types', 'Operators', 'Input & Output', 'Conditionals', 'Loops', 'Functions', 'Strings', 'Lists, Tuples, Sets, Dicts'] },
+            { id: 'stage2', title: 'INTERMEDIATE', subtitle: 'Level Up Your Skills', color: 'from-blue-500 to-cyan-500', icon: 'fa-chart-simple', items: ['List Comprehension', 'Functions Advanced', 'Lambda, Map, Filter', 'Modules & Packages', 'Exception Handling', 'File Handling', 'Iterators & Generators', 'Decorators', 'Regular Expressions', 'OOP Basics'] },
+            { id: 'stage3', title: 'ADVANCED', subtitle: 'Go Deeper', color: 'from-purple-500 to-indigo-500', icon: 'fa-rocket', items: ['OOP Deep Dive', 'Inheritance & Poly', 'Abstraction', 'Encapsulation', 'Class/Static Methods', 'Advanced Modules', 'Logging', 'Unit Testing', 'Virtual Environments', 'Code Optimization'] },
+            { id: 'stage4', title: 'SPECIALIZE', subtitle: 'Choose Your Path', color: 'from-orange-500 to-amber-500', icon: 'fa-bullseye', items: ['Data Science (Pandas)', 'Web Dev (Flask/Django)', 'Automation (Selenium)', 'Data Analytics', 'Game Dev (Pygame)'] },
+            { id: 'stage5', title: 'MASTER', subtitle: 'Create & Impact', color: 'from-rose-500 to-pink-500', icon: 'fa-trophy', items: ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Data Engineering', 'APIs & Deployment', 'Docker Basics', 'Git / CI/CD', 'Cloud Deployments'] }
+        ];
+
+        // 2. Curriculum 30 Days Data
+        const curriculum30 = [
+            { day: 1, title: 'Intro to Python', list: ['What is Python?', 'Install', 'First program'], concept: 'Python is a high-level, interpreted programming language known for its readability. We use `print()` to output text to the screen.', usecase: 'Writing simple automation scripts.', youtube: 'Corey Schafer: Python Tutorial for Beginners 1', ylink: 'https://youtu.be/YYXdXT2l-Gg', code: 'print("Hello, World!")' },
+            { day: 2, title: 'Variables & Data Types', list: ['Variables', 'Naming rules', 'int, float, str, bool'], concept: 'Variables store data. Python is dynamically typed, meaning you don\'t need to declare the type explicitly.', usecase: 'Storing user input like age (int) or name (str).', youtube: 'Programming with Mosh: Variables', ylink: 'https://youtu.be/kqtD5dpn9C8', code: 'name = "Alice"\nage = 25\nis_student = True\nprint(f"{name} is {age} years old.")' },
+            { day: 3, title: 'Input / Output', list: ['input()', 'print()', 'Formatting'], concept: 'The `input()` function pauses execution and waits for the user to type something. `print()` formats and displays it.', usecase: 'Building interactive CLI tools.', youtube: 'Tech With Tim: Basic Input and Output', ylink: '#', code: 'user_name = input("Enter your name: ")\nprint(f"Welcome, {user_name}!")' },
+            { day: 4, title: 'Operators', list: ['Arithmetic', 'Assignment', 'Comparison', 'Logical'], concept: 'Operators let you perform math (+, -, *, /) or logical comparisons (==, !=, >, and, or).', usecase: 'Calculating totals in a shopping cart.', youtube: 'Corey Schafer: Integers and Floats', ylink: '#', code: 'x = 10\ny = 3\nprint(x + y, x > y)' },
+            { day: 5, title: 'Conditional Statements', list: ['if', 'if-else', 'if-elif-else', 'Nested if'], concept: 'Conditionals control the flow of your program based on true/false conditions.', usecase: 'Checking if a user is old enough to access a site.', youtube: 'Programming with Mosh: If Statements', ylink: '#', code: 'age = 18\nif age >= 18:\n    print("Adult")\nelse:\n    print("Minor")' },
+            { day: 6, title: 'Loops', list: ['for loop', 'while loop', 'break', 'continue'], concept: 'Loops repeat a block of code. `for` iterates over a sequence, `while` repeats as long as a condition is true.', usecase: 'Processing every item in a list of emails.', youtube: 'Corey Schafer: For/While Loops', ylink: '#', code: 'for i in range(3):\n    print(f"Iteration {i}")' },
+            { day: 7, title: 'Functions', list: ['Defining', 'Parameters', 'Return statements'], concept: 'Functions are reusable blocks of code. You define them with `def` and call them by name.', usecase: 'A tax calculation block you can call repeatedly.', youtube: 'Tech With Tim: Functions', ylink: '#', code: 'def add(a, b):\n    return a + b\n\nprint(add(5, 7))' },
+            { day: 8, title: 'Lists', list: ['Creating', 'Indexing', 'Slicing', 'Methods'], concept: 'Lists are ordered, mutable collections of items enclosed in brackets `[]`.', usecase: 'Storing a sequence of to-do items.', youtube: 'Corey Schafer: Lists', ylink: '#', code: 'fruits = ["apple", "banana"]\nfruits.append("cherry")\nprint(fruits[0])' },
+            { day: 9, title: 'Tuples', list: ['Creating', 'Indexing', 'Tuple Methods'], concept: 'Tuples are like lists but immutable (cannot be changed after creation) enclosed in `()`.', usecase: 'Storing fixed configuration coordinates (x,y).', youtube: 'Programming with Mosh: Tuples', ylink: '#', code: 'coords = (10, 20)\nprint(coords[0])' },
+            { day: 10, title: 'Dictionaries', list: ['Creating', 'Accessing', 'Methods', 'Keys/Values'], concept: 'Dictionaries store data in key-value pairs using `{}`.', usecase: 'Representing a user profile (name, age, email).', youtube: 'Corey Schafer: Dictionaries', ylink: '#', code: 'user = {"name": "Bob", "age": 30}\nprint(user["name"])' }
+        ];
+        
+        // Auto-fill days 11-30 with generic data for the demo to ensure full 30-day UI works perfectly.
+        const topics = ["Sets", "Strings", "String Advanced", "List Comprehension", "Dict Comprehension", "File Handling", "Exception Handling", "Modules & Packages", "OOP Part 1", "OOP Part 2", "OOP Part 3", "OOP Part 4", "Date & Time", "Regular Expressions", "Working with JSON", "Web Scraping", "Mini Project 1", "Mini Project 2", "Mini Project 3", "Revision Challenge"];
+        for(let i=11; i<=30; i++) {
+            curriculum30.push({ day: i, title: topics[i-11], list: ['Topic Concept', 'Examples'], concept: `Learn the fundamentals of ${topics[i-11]}.`, usecase: `Applying ${topics[i-11]} in real applications.`, youtube: 'Search YouTube', ylink: 'https://youtube.com', code: `# Code practice for Day ${i}\nprint("Practicing ${topics[i-11]}")`});
+        }
+
+        // 3. Challenge Types Data
+        const challengeData = {
+            'algo': { icon: 'fa-brain', title: 'Algorithmic Thinker', desc: 'Sharpen your logic and master data structures.', tasks: [{title: 'Two Sum', diff: 'Easy', desc: 'Find two numbers in a list that add up to a target.'}, {title: 'Valid Palindrome', diff: 'Easy', desc: 'Check if a string reads the same forwards and backwards.'}] },
+            'debug': { icon: 'fa-bug', title: 'Bug Hunter', desc: 'Find and fix errors in broken Python scripts.', tasks: [{title: 'Infinite Loop Fix', diff: 'Easy', desc: 'Prevent a while loop from running forever.'}, {title: 'IndexError Resolver', diff: 'Med', desc: 'Fix out-of-bounds list accesses.'}] },
+            'opt': { icon: 'fa-gauge-high', title: 'Code Optimizer', desc: 'Make code run faster and more "Pythonic".', tasks: [{title: 'List to Set Lookup', diff: 'Med', desc: 'Optimize a search from O(n) to O(1).'}, {title: 'Nested Loop Refactor', diff: 'Hard', desc: 'Flatten a nested loop using comprehensions.'}] },
+            'create': { icon: 'fa-palette', title: 'Creative Builder', desc: 'Build fun terminal-based tools and arts.', tasks: [{title: 'ASCII Art Gen', diff: 'Easy', desc: 'Print a diamond shape using loops.'}, {title: 'Text Adventure', diff: 'Med', desc: 'Build a choose-your-own-path game.'}] },
+            'data': { icon: 'fa-table', title: 'Data Wrangler', desc: 'Parse, clean, and manipulate real-world data.', tasks: [{title: 'CSV Parser', diff: 'Med', desc: 'Parse a raw comma-separated string into dictionaries.'}, {title: 'JSON Cleaner', diff: 'Med', desc: 'Remove null values from a nested JSON object.'}] }
+        };
+
+        // --- STATE MANAGEMENT (Mock Auth & Progress) ---
+        let currentUser = null;
+        let userProgress = {
+            completedDays: [],
+            streak: 0,
+            xp: 0,
+            challenges: 0
+        };
+        let currentActiveDay = 1;
+
+        // Initialize App
+        function initApp() {
+            // Check LocalStorage
+            const storedUser = localStorage.getItem('pyMasterUser');
+            if(storedUser) {
+                currentUser = storedUser;
+                const storedProgress = localStorage.getItem('pyMasterProgress');
+                if(storedProgress) userProgress = JSON.parse(storedProgress);
+                updateAuthUI();
+            }
+
+            renderRoadmap();
+            renderCurriculum();
+            renderChallenges();
+            updateDashboardStats();
+            
+            // Set first challenge tab active
+            switchChallengeTab('algo');
+        }
+
+        // --- UI & NAVIGATION ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${tabId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active-nav', 'bg-slate-100', 'dark:bg-slate-800', 'text-python-blue', 'dark:text-blue-400');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active-nav', 'text-python-blue', 'dark:text-blue-400', 'bg-slate-50', 'dark:bg-slate-800/50');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- AUTHENTICATION ---
+        function openAuthModal() { document.getElementById('auth-modal').classList.replace('hidden', 'flex'); }
+        function closeAuthModal() { document.getElementById('auth-modal').classList.replace('flex', 'hidden'); }
+        
+        function loginUser() {
+            const username = document.getElementById('auth-username').value.trim();
+            if(username) {
+                currentUser = username;
+                localStorage.setItem('pyMasterUser', username);
+                if(!localStorage.getItem('pyMasterProgress')) {
+                    localStorage.setItem('pyMasterProgress', JSON.stringify(userProgress));
+                }
+                updateAuthUI();
+                closeAuthModal();
+            }
+        }
+
+        function loginWithGoogle() {
+            const btn = document.querySelector('button[onclick="loginWithGoogle()"]');
+            const originalContent = btn.innerHTML;
+            
+            // Simulate Google OAuth network loading state
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-slate-500 dark:text-slate-300"></i><span class="ml-2 text-slate-500 dark:text-slate-300">Connecting to Google...</span>';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                // Mock Google User Login
+                currentUser = "Google Dev"; 
+                localStorage.setItem('pyMasterUser', currentUser);
+                
+                if(!localStorage.getItem('pyMasterProgress')) {
+                    localStorage.setItem('pyMasterProgress', JSON.stringify(userProgress));
+                }
+                
+                updateAuthUI();
+                closeAuthModal();
+                
+                // Reset button state
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }, 1200);
+        }
+
+        function updateAuthUI() {
+            if(currentUser) {
+                document.getElementById('auth-container').innerHTML = `
+                    <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" onclick="logoutUser()">
+                        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs">${currentUser.charAt(0).toUpperCase()}</div>
+                        <span class="text-sm font-semibold hidden sm:block">${currentUser}</span>
+                    </div>
+                `;
+                document.getElementById('dash-username').innerText = currentUser;
+                updateDashboardStats();
+                renderCurriculum(); // Re-render to show checkmarks
+            }
+        }
+
+        function logoutUser() {
+            if(confirm("Log out?")) {
+                currentUser = null;
+                userProgress = { completedDays: [], streak: 0, xp: 0, challenges: 0 };
+                localStorage.removeItem('pyMasterUser');
+                document.getElementById('auth-container').innerHTML = `<button onclick="openAuthModal()" class="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-lg shadow hover:opacity-90 transition">Sign In</button>`;
+                document.getElementById('dash-username').innerText = 'Developer';
+                updateDashboardStats();
+                renderCurriculum();
+            }
+        }
+
+        function saveProgress() {
+            if(currentUser) localStorage.setItem('pyMasterProgress', JSON.stringify(userProgress));
+            updateDashboardStats();
+            renderCurriculum(); // Update checkmarks
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('stat-days').innerText = userProgress.completedDays.length;
+            document.getElementById('stat-streak').innerText = userProgress.streak || (userProgress.completedDays.length > 0 ? 1 : 0);
+            document.getElementById('stat-xp').innerText = (userProgress.completedDays.length * 50) + (userProgress.challenges * 100);
+            document.getElementById('stat-challenges').innerText = userProgress.challenges;
+            
+            // Progress Bar
+            const pct = (userProgress.completedDays.length / 30) * 100;
+            const bar = document.getElementById('curriculum-progress-bar');
+            if(bar) bar.style.width = `${pct}%`;
+        }
+
+        // --- RENDERERS ---
+
+        function renderRoadmap() {
+            const container = document.getElementById('roadmap-container');
+            container.innerHTML = '';
+            roadmapData.forEach((stage, idx) => {
+                const isLast = idx === roadmapData.length - 1;
+                const itemsHtml = stage.items.map(item => `<li class="text-xs text-slate-600 dark:text-slate-400 py-1 border-b border-slate-100 dark:border-slate-700/50 last:border-0"><i class="fa-solid fa-check text-emerald-500 mr-1.5 opacity-50"></i>${item}</li>`).join('');
+                
+                container.innerHTML += `
+                    <div class="roadmap-node flex-1 relative flex flex-col group">
+                        <div class="roadmap-line"></div>
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${stage.color} text-white flex items-center justify-center text-2xl shadow-lg relative z-10 transform transition group-hover:scale-110 mb-4">
+                            <i class="fa-solid ${stage.icon}"></i>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex-1">
+                            <div class="text-center mb-3">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Stage ${idx+1}</span>
+                                <h3 class="font-bold text-sm text-slate-800 dark:text-white leading-tight">${stage.title}</h3>
+                                <p class="text-[11px] text-python-blue dark:text-blue-400 font-semibold mt-1">${stage.subtitle}</p>
+                            </div>
+                            <ul class="space-y-0.5 mt-2">${itemsHtml}</ul>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderCurriculum() {
+            const grid = document.getElementById('curriculum-grid');
+            grid.innerHTML = '';
+            curriculum30.forEach(day => {
+                const isDone = userProgress.completedDays.includes(day.day);
+                const statusIcon = isDone 
+                    ? '<div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></div>' 
+                    : '<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-xs text-slate-400"></div>';
+                
+                const listHtml = day.list.slice(0,3).map(i => `<li>• ${i}</li>`).join('');
+
+                grid.innerHTML += `
+                    <div onclick="openDayModal(${day.day})" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border ${isDone ? 'border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/30' : 'border-slate-200 dark:border-slate-700'} shadow-sm hover:shadow-md hover:border-python-blue transition cursor-pointer flex flex-col h-40">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Day ${day.day}</span>
+                            ${statusIcon}
+                        </div>
+                        <h3 class="font-bold text-sm leading-tight text-slate-800 dark:text-white mb-2">${day.title}</h3>
+                        <ul class="text-[11px] text-slate-500 dark:text-slate-400 space-y-1 mt-auto overflow-hidden text-ellipsis whitespace-nowrap">
+                            ${listHtml}
+                        </ul>
+                    </div>
+                `;
+            });
+        }
+
+        function renderChallenges() {
+            const tabs = document.getElementById('challenge-tabs');
+            tabs.innerHTML = '';
+            for (const [key, data] of Object.entries(challengeData)) {
+                tabs.innerHTML += `
+                    <button onclick="switchChallengeTab('${key}')" id="chal-tab-${key}" class="px-4 py-3 text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white border-b-2 border-transparent transition whitespace-nowrap flex items-center justify-center">
+                        <i class="fa-solid ${data.icon} mr-2"></i> ${data.title}
+                    </button>
+                `;
+            }
+        }
+
+        function switchChallengeTab(key) {
+            // Update tabs UI
+            document.querySelectorAll('[id^="chal-tab-"]').forEach(el => {
+                el.classList.remove('border-python-blue', 'text-python-blue', 'dark:text-blue-400');
+                el.classList.add('border-transparent');
+            });
+            document.getElementById(`chal-tab-${key}`).classList.remove('border-transparent');
+            document.getElementById(`chal-tab-${key}`).classList.add('border-python-blue', 'text-python-blue', 'dark:text-blue-400');
+
+            // Update content
+            const data = challengeData[key];
+            const content = document.getElementById('challenge-content-area');
+            
+            let tasksHtml = data.tasks.map(task => `
+                <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-1">
+                            <h4 class="font-bold text-slate-800 dark:text-white">${task.title}</h4>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${task.diff==='Easy'?'bg-emerald-100 text-emerald-700': task.diff==='Med'?'bg-amber-100 text-amber-700':'bg-red-100 text-red-700'}">${task.diff}</span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">${task.desc}</p>
+                    </div>
+                    <button onclick="loadChallengeCode('${task.title}')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-600 transition shadow-sm">Solve</button>
+                </div>
+            `).join('');
+
+            content.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold flex items-center"><i class="fa-solid ${data.icon} text-purple-500 mr-2"></i> ${data.title}</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">${data.desc}</p>
+                </div>
+                <div class="space-y-3">
+                    ${tasksHtml}
+                </div>
+            `;
+        }
+
+        // --- MODAL LOGIC ---
+        function openDayModal(dayNum) {
+            const data = curriculum30.find(d => d.day === dayNum);
+            currentActiveDay = dayNum;
+            
+            document.getElementById('modal-day-num').innerText = `Day ${data.day}`;
+            document.getElementById('modal-day-title').innerText = data.title;
+            document.getElementById('modal-concept').innerHTML = data.concept;
+            document.getElementById('modal-usecase').innerText = data.usecase;
+            
+            const vLink = document.getElementById('modal-video-link');
+            vLink.href = data.ylink;
+            document.getElementById('modal-video-text').innerText = data.youtube;
+
+            const quizContainer = document.getElementById('quiz-container');
+            if(quizContainer) {
+                quizContainer.innerHTML = '';
+                quizContainer.classList.add('hidden');
+                quizContainer.classList.remove('flex');
+                document.getElementById('btn-generate-quiz').innerHTML = '<i class="fa-solid fa-brain mr-2"></i> AI Quiz';
+                document.getElementById('btn-generate-quiz').disabled = false;
+            }
+
+            const btn = document.getElementById('btn-mark-complete');
+            if(userProgress.completedDays.includes(dayNum)) {
+                btn.innerHTML = '<i class="fa-solid fa-check-double mr-2"></i> Completed';
+                btn.className = "px-4 py-2 bg-emerald-500 text-white font-bold rounded-lg text-sm flex items-center";
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Mark as Done';
+                btn.className = "px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-emerald-900/40 dark:hover:text-emerald-400 font-bold rounded-lg transition text-sm flex items-center";
+            }
+
+            const modal = document.getElementById('day-modal');
+            const content = document.getElementById('day-modal-content');
+            modal.classList.replace('hidden', 'flex');
+            setTimeout(() => {
+                modal.classList.replace('opacity-0', 'opacity-100');
+                content.classList.replace('scale-95', 'scale-100');
+            }, 10);
+        }
+
+        function closeDayModal() {
+            const modal = document.getElementById('day-modal');
+            const content = document.getElementById('day-modal-content');
+            modal.classList.replace('opacity-100', 'opacity-0');
+            content.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => modal.classList.replace('flex', 'hidden'), 300);
+        }
+
+        function markDayComplete() {
+            if(!currentUser) return openAuthModal();
+            
+            if(!userProgress.completedDays.includes(currentActiveDay)) {
+                userProgress.completedDays.push(currentActiveDay);
+                saveProgress();
+                openDayModal(currentActiveDay); // refresh modal UI
+            }
+        }
+
+        function practiceDayCode() {
+            const data = curriculum30.find(d => d.day === currentActiveDay);
+            document.getElementById('code-editor').value = data.code;
+            closeDayModal();
+            switchTab('compiler');
+            toggleIdeMode('code');
+        }
+
+        function startProject(type) {
+            let code = "";
+            if(type === 'todo') code = "# Day 27: CLI To-Do List\ntasks = []\n\ndef add_task(task):\n    tasks.append(task)\n    print(f'Added: {task}')\n\n# Your code here: Add loop and input handling";
+            if(type === 'password') code = "import random\nimport string\n\n# Day 28: Password Generator\ndef generate_password(length=12):\n    chars = string.ascii_letters + string.digits + string.punctuation\n    # Your logic here\n    pass\n";
+            if(type === 'rps') code = "import random\n\n# Day 29: Rock Paper Scissors\nchoices = ['rock', 'paper', 'scissors']\n\nprint('Welcome to RPS!')\n# Implement game loop and win conditions";
+            
+            document.getElementById('code-editor').value = code;
+            switchTab('compiler');
+            toggleIdeMode('code');
+        }
+
+        function loadChallengeCode(title) {
+            document.getElementById('code-editor').value = `# Challenge: ${title}\n# Write your optimized solution below.\n\ndef solution():\n    pass\n`;
+            switchTab('compiler');
+            toggleIdeMode('code');
+        }
+
+        function toggleIdeMode(mode) {
+            const btnCode = document.getElementById('btn-mode-code');
+            const btnTutor = document.getElementById('btn-mode-tutor');
+            const workspaceIde = document.getElementById('ide-workspace');
+            const workspaceTutor = document.getElementById('tutor-workspace');
+
+            if(mode === 'code') {
+                btnCode.className = "px-4 py-1.5 rounded-md text-sm font-bold bg-white dark:bg-slate-600 shadow-sm transition";
+                btnTutor.className = "px-4 py-1.5 rounded-md text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition flex items-center";
+                workspaceIde.classList.remove('hidden');
+                workspaceTutor.classList.add('hidden');
+            } else {
+                btnTutor.className = "px-4 py-1.5 rounded-md text-sm font-bold bg-white dark:bg-slate-600 shadow-sm transition flex items-center";
+                btnCode.className = "px-4 py-1.5 rounded-md text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition";
+                workspaceTutor.classList.remove('hidden');
+                workspaceTutor.classList.add('flex'); // Because it's flex col
+                workspaceIde.classList.add('hidden');
+            }
+        }
+
+        function clearConsole() {
+            document.getElementById('console-output').innerHTML = '<div class="text-slate-600">>>> Terminal cleared.</div>';
+        }
+
+        function clearTutorChat() {
+            document.getElementById('tutor-chat-messages').innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm flex-shrink-0 mt-1"><i class="fa-solid fa-robot"></i></div>
+                    <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-600 max-w-[80%]">
+                        Chat cleared. How can I help you next?
+                    </div>
+                </div>`;
+        }
+
+        function runCode() {
+            const code = document.getElementById('code-editor').value;
+            const consoleOut = document.getElementById('console-output');
+            
+            if(!code.trim()) {
+                consoleOut.innerHTML += `<div class="text-slate-500 mt-2">>>> No code provided.</div>`;
+                return;
+            }
+
+            consoleOut.innerHTML += `<div class="text-slate-400 mt-2">>>> Executing main.py...</div>`;
+            
+            // Basic mock logic to extract print statements for visual feedback.
+            setTimeout(() => {
+                const lines = code.split('\n');
+                let outputs = [];
+                lines.forEach(line => {
+                    const printMatch = line.match(/print\(['"]?(.*?)['"]?\)/);
+                    if (printMatch && !line.trim().startsWith('#')) {
+                        let text = printMatch[1];
+                        // Handle basic f-string mock replacement for demo
+                        text = text.replace(/\{name\}/g, 'Zero to Hero').replace(/\{user_name\}/g, 'Tester').replace(/\{i\}/g, '[loop_val]');
+                        outputs.push(text);
+                    }
+                });
+                
+                if(outputs.length > 0) {
+                    consoleOut.innerHTML += `<div class="text-white">${outputs.join('<br>')}</div>`;
+                } else {
+                    consoleOut.innerHTML += `<div class="text-slate-300 italic">[Process completed with exit code 0. No stdout.]</div>`;
+                }
+                consoleOut.scrollTop = consoleOut.scrollHeight;
+                
+                // Reward challenge attempt
+                if(currentUser && code.includes('def ')) {
+                    userProgress.challenges += 1;
+                    saveProgress();
+                }
+
+            }, 500);
+        }
+
+        // --- GEMINI API MOCK / SETUP ---
+        // Global variables for Gemini API
+        let tutorChatHistory = [];
+
+        async function callGeminiAPI(systemPrompt, userPrompt, retries = 4, delay = 1000, chatHistory = null) {
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            
+            let contents = [];
+            if (chatHistory && chatHistory.length > 0) {
+                contents = [...chatHistory];
+                contents.push({ role: "user", parts: [{ text: userPrompt }] });
+            } else {
+                contents = [{ role: "user", parts: [{ text: userPrompt }] }];
+            }
+
+            const payload = {
+                contents: contents,
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Handle rate limits with exponential backoff
+                    if (response.status === 429) {
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                        continue; 
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        
+                        const aiResponseText = result.candidates[0].content.parts[0].text;
+                        
+                        // If using chat history, append the AI response
+                        if (chatHistory) {
+                           chatHistory.push({ role: "user", parts: [{ text: userPrompt }] });
+                           chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
+                        }
+
+                        return aiResponseText;
+                    } else {
+                        return "Received an unexpected response structure from the AI.";
+                    }
+                } catch (e) {
+                    if (i === retries - 1) {
+                        console.error("Final API request failed:", e);
+                        return "Error connecting to AI. Please try again later.";
+                    }
+                    // Wait before retrying (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                }
+            }
+            return "Failed to get a response after multiple retries.";
+        }
+
+        async function aiDebugCode() {
+            const code = document.getElementById('code-editor').value;
+            const consoleOut = document.getElementById('console-output');
+            const btnReview = document.getElementById('btn-ai-review');
+            
+            btnReview.disabled = true;
+            btnReview.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Reviewing...';
+
+            consoleOut.innerHTML += `<div class="mt-4 text-emerald-400"><i class="fa-solid fa-wand-magic-sparkles fa-beat-fade mr-2"></i>Analyzing code with Gemini AI...</div>`;
+            consoleOut.scrollTop = consoleOut.scrollHeight;
+
+            const systemPrompt = "Act as an expert Python code reviewer. Analyze the provided code for bugs, logic errors, and style issues (PEP 8). Provide a concise summary of issues found, followed by actionable suggestions for improvement. If the code is perfect, commend the user and suggest an advanced concept they could try next.";
+            const res = await callGeminiAPI(systemPrompt, `Review this code:\n\`\`\`python\n${code}\n\`\`\``);
+            
+            // Basic formatting for the output
+            let formattedRes = res.replace(/```python/g, '<div class="bg-slate-800 text-slate-200 p-2 my-2 rounded font-mono text-xs overflow-x-auto">')
+                                  .replace(/```/g, '</div>')
+                                  .replace(/\*\*(.*?)\*\*/g, '<strong class="text-emerald-300">$1</strong>');
+
+            consoleOut.innerHTML += `
+                <div class="mt-2 bg-emerald-900/20 border border-emerald-800/50 p-3 rounded-xl text-emerald-100 whitespace-pre-wrap">
+                    <div class="font-bold text-emerald-400 mb-1 border-b border-emerald-800 pb-1">AI Review Complete:</div>
+                    ${formattedRes}
+                </div>`;
+            consoleOut.scrollTop = consoleOut.scrollHeight;
+
+            btnReview.disabled = false;
+            btnReview.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles text-emerald-400 mr-1.5"></i>Review';
+        }
+
+        async function sendTutorMessage() {
+            const input = document.getElementById('tutor-chat-input');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            const chatbox = document.getElementById('tutor-chat-messages');
+            chatbox.innerHTML += `
+                <div class="flex items-end justify-end space-x-3">
+                    <div class="bg-slate-800 dark:bg-slate-700 text-white p-4 rounded-2xl rounded-tr-none text-sm max-w-[80%] shadow-sm">${msg}</div>
+                </div>`;
+            input.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            const loadingId = 'load-' + Date.now();
+            chatbox.innerHTML += `
+                <div id="${loadingId}" class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm flex-shrink-0 mt-1"><i class="fa-solid fa-wand-magic-sparkles fa-beat-fade"></i></div>
+                    <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl rounded-tl-none text-sm text-slate-500 italic shadow-sm border border-slate-200 dark:border-slate-600">Thinking...</div>
+                </div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            const systemPrompt = "You are a friendly, encouraging, and expert Python tutor. Your goal is to help beginners learn Python effectively. Provide clear explanations, use simple analogies, and always include small, readable code examples to illustrate your points. If the user asks you to write a complex program, guide them step-by-step instead of just giving them the final answer.";
+            
+            const res = await callGeminiAPI(systemPrompt, msg, 3, 1000, tutorChatHistory);
+            
+            const loadingEl = document.getElementById(loadingId);
+            if(loadingEl) loadingEl.remove();
+            
+            // Simple markdown parser for bold and code blocks
+            let formattedRes = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formattedRes = formattedRes.replace(/```python\n([\s\S]*?)```/g, '<div class="bg-slate-900 text-slate-200 p-3 rounded-lg font-mono text-xs my-2 overflow-x-auto">$1</div>');
+            formattedRes = formattedRes.replace(/```([\s\S]*?)```/g, '<div class="bg-slate-800 text-slate-300 p-2 rounded-lg font-mono text-xs my-2 overflow-x-auto">$1</div>');
+
+            chatbox.innerHTML += `
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm flex-shrink-0 mt-1"><i class="fa-solid fa-robot"></i></div>
+                    <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-600 max-w-[80%] whitespace-pre-wrap">${formattedRes}</div>
+                </div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        let currentQuizData = null;
+
+        async function generateAIQuiz() {
+            const data = curriculum30.find(d => d.day === currentActiveDay);
+            const quizContainer = document.getElementById('quiz-container');
+            const btn = document.getElementById('btn-generate-quiz');
+
+            quizContainer.innerHTML = '<div class="text-center py-6 text-purple-500"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3"></i><p class="text-sm font-bold">AI is crafting your knowledge check...</p></div>';
+            quizContainer.classList.remove('hidden');
+            quizContainer.classList.add('flex');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Generating...';
+            btn.disabled = true;
+
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: `Generate a 3-question multiple choice quiz about Python: ${data.title}. Focus on these concepts: ${data.list.join(', ')}. Keep questions clear and concise for a beginner.` }] }],
+                systemInstruction: { parts: [{ text: "You are an expert Python instructor. Create a helpful, accurate multiple-choice quiz." }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                "question": { type: "STRING" },
+                                "options": { type: "ARRAY", items: { type: "STRING" } },
+                                "correctAnswerIndex": { type: "INTEGER", description: "0-based index of the correct option" },
+                                "explanation": { type: "STRING" }
+                            },
+                            required: ["question", "options", "correctAnswerIndex", "explanation"]
+                        }
+                    }
+                }
+            };
+
+            // Implement basic exponential backoff for structured output call
+            let retries = 3;
+            let delay = 1000;
+            let success = false;
+
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (response.status === 429) {
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                        continue; 
+                    }
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts) {
+                        const jsonText = result.candidates[0].content.parts[0].text;
+                        currentQuizData = JSON.parse(jsonText);
+                        renderQuiz(currentQuizData);
+                        success = true;
+                        break;
+                    }
+                } catch (e) {
+                    if (i === retries - 1) {
+                        console.error("Quiz generation failed:", e);
+                        quizContainer.innerHTML = '<div class="text-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded-xl text-sm border border-red-200 dark:border-red-800"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Failed to generate quiz. Please try again.</div>';
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                }
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-brain mr-2"></i> AI Quiz';
+            btn.disabled = false;
+        }
+
+        function renderQuiz(quizArray) {
+            const container = document.getElementById('quiz-container');
+            let html = '<h3 class="font-bold text-lg mb-2 flex items-center text-purple-600 dark:text-purple-400"><i class="fa-solid fa-brain mr-2"></i> AI Generated Knowledge Check</h3>';
+            
+            quizArray.forEach((q, qIndex) => {
+                let optionsHtml = q.options.map((opt, oIndex) => `
+                    <div onclick="selectQuizAnswer(${qIndex}, ${oIndex}, ${q.correctAnswerIndex})" id="q${qIndex}-opt${oIndex}" class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition text-sm text-slate-700 dark:text-slate-300">
+                        ${opt}
+                    </div>
+                `).join('');
+                
+                html += `
+                    <div class="mb-4 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <p class="font-bold text-slate-800 dark:text-white mb-3 text-sm">${qIndex + 1}. ${q.question}</p>
+                        <div class="space-y-2">
+                            ${optionsHtml}
+                        </div>
+                        <div id="q${qIndex}-explanation" class="hidden mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg text-xs border border-blue-100 dark:border-blue-800">
+                            <strong>Explanation:</strong> ${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            setTimeout(() => {
+                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function selectQuizAnswer(qIndex, selectedIndex, correctIndex) {
+            const options = document.querySelectorAll(`[id^="q${qIndex}-opt"]`);
+            options.forEach(opt => {
+                opt.onclick = null; // Disable clicks
+                opt.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'cursor-pointer');
+            });
+
+            const selectedEl = document.getElementById(`q${qIndex}-opt${selectedIndex}`);
+            const correctEl = document.getElementById(`q${qIndex}-opt${correctIndex}`);
+
+            if (selectedIndex === correctIndex) {
+                selectedEl.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'dark:bg-emerald-900/40', 'dark:text-emerald-400', 'font-bold');
+                selectedEl.innerHTML += ' <i class="fa-solid fa-check-circle float-right mt-0.5"></i>';
+            } else {
+                selectedEl.classList.add('bg-red-100', 'border-red-500', 'text-red-800', 'dark:bg-red-900/40', 'dark:text-red-400');
+                selectedEl.innerHTML += ' <i class="fa-solid fa-times-circle float-right mt-0.5"></i>';
+                correctEl.classList.add('bg-emerald-50', 'border-emerald-300', 'dark:bg-emerald-900/20'); // Highlight correct answer softly
+            }
+
+            document.getElementById(`q${qIndex}-explanation`).classList.remove('hidden');
+        }
+
+        async function generateCustomAIChallenge() {
+            const btn = document.getElementById('btn-custom-challenge');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Generating...';
+            btn.disabled = true;
+            
+            const completedCount = userProgress.completedDays.length;
+            const prompt = `Generate a unique, engaging Python coding challenge for a student who has completed ${completedCount}/30 days of a Python course. 
+            Include:
+            1. An exciting Title
+            2. Difficulty Level (Easy, Medium, or Hard based on progress)
+            3. A brief, clear Description of the problem and expected output.
+            Keep it concise but fun (e.g., space-themed, data-driven, or a mini-game).`;
+
+            const res = await callGeminiAPI("You are an expert Python curriculum designer.", prompt);
+            
+            const content = document.getElementById('challenge-content-area');
+            
+            let formattedRes = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formattedRes = formattedRes.replace(/\`\`\`python\n([\s\S]*?)\`\`\`/g, '<div class="bg-slate-900 text-slate-200 p-3 rounded-lg font-mono text-xs my-2 overflow-x-auto">$1</div>');
+
+            const challengeId = 'ai-chal-' + Date.now();
+            
+            content.innerHTML = `
+                <div id="${challengeId}" class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 p-6 rounded-2xl border border-purple-200 dark:border-purple-800 shadow-sm transition-all">
+                    <h3 class="text-xl font-bold flex items-center mb-4 text-purple-800 dark:text-purple-300"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-2"></i> AI Generated Challenge</h3>
+                    <div class="text-slate-700 dark:text-slate-300 text-sm space-y-2 whitespace-pre-wrap leading-relaxed">${formattedRes}</div>
+                    <button onclick="loadChallengeCode('AI Custom Challenge')" class="mt-6 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-bold transition shadow-md flex items-center">
+                        <i class="fa-solid fa-code mr-2"></i> Solve in IDE
+                    </button>
+                </div>
+            ` + content.innerHTML;
+
+            btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Generate AI Challenge';
+            btn.disabled = false;
+            
+            // Scroll to the new challenge
+            document.getElementById(challengeId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Run Init
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
